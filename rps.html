@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #ffffff;
+            --accent-color: #ffd700;
+            --rock-color: #ff6b6b;
+            --paper-color: #4ecdc4;
+            --scissors-color: #a29bfe;
+            --reset-color: #ff7675;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .choice-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            width: 90px;
+            height: 90px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-10px) scale(1.1);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .choice-btn:active {
+            transform: scale(0.95);
+        }
+
+        .choice-btn[data-choice="rock"]:hover {
+            border-color: var(--rock-color);
+            color: var(--rock-color);
+        }
+
+        .choice-btn[data-choice="paper"]:hover {
+            border-color: var(--paper-color);
+            color: var(--paper-color);
+        }
+
+        .choice-btn[data-choice="scissors"]:hover {
+            border-color: var(--scissors-color);
+            color: var(--scissors-color);
+        }
+
+        .results {
+            margin-bottom: 30px;
+            min-height: 120px;
+        }
+
+        .choice-display {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .outcome {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 10px;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .reset-btn {
+            background: var(--reset-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(255, 118, 117, 0.5);
+        }
+
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 400px) {
+            .choices {
+                gap: 10px;
+            }
+
+            .choice-btn {
+                width: 75px;
+                height: 75px;
+                font-size: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Rock Paper Scissors</h1>
+
+        <div class="scoreboard">
+            <div class="score-item">
+                <span class="score-label">Wins</span>
+                <span id="wins" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Losses</span>
+                <span id="losses" class="score-value">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-label">Draws</span>
+                <span id="draws" class="score-value">0</span>
+            </div>
+        </div>
+
+        <div class="choices">
+            <button class="choice-btn" data-choice="rock" title="Rock">🪨</button>
+            <button class="choice-btn" data-choice="paper" title="Paper">📄</button>
+            <button class="choice-btn" data-choice="scissors" title="Scissors">✂️</button>
+        </div>
+
+        <div class="results">
+            <div id="user-display" class="choice-display"></div>
+            <div id="comp-display" class="choice-display"></div>
+            <div id="outcome-display" class="outcome"></div>
+        </div>
+
+        <button id="reset-btn" class="reset-btn">Reset Score</button>
+    </div>
+
+    <script>
+        const choices = ['rock', 'paper', 'scissors'];
+        const emojis = {
+            rock: '🪨',
+            paper: '📄',
+            scissors: '✂️'
+        };
+
+        let scores = {
+            wins: 0,
+            losses: 0,
+            draws: 0
+        };
+
+        const winMap = {
+            rock: 'scissors',
+            paper: 'rock',
+            scissors: 'paper'
+        };
+
+        const buttons = document.querySelectorAll('.choice-btn');
+        const userDisplay = document.getElementById('user-display');
+        const compDisplay = document.getElementById('comp-display');
+        const outcomeDisplay = document.getElementById('outcome-display');
+        const winsEl = document.getElementById('wins');
+        const lossesEl = document.getElementById('losses');
+        const drawsEl = document.getElementById('draws');
+        const resetBtn = document.getElementById('reset-btn');
+
+        function getComputerChoice() {
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        function playRound(userChoice) {
+            const compChoice = getComputerChoice();
+
+            // Remove 'show' class to re-trigger animation
+            userDisplay.classList.remove('show');
+            compDisplay.classList.remove('show');
+            outcomeDisplay.classList.remove('show');
+
+            // Small delay to allow CSS transition reset
+            setTimeout(() => {
+                userDisplay.innerHTML = `You chose <strong>${userChoice.charAt(0).toUpperCase() + userChoice.slice(1)}</strong> ${emojis[userChoice]}`;
+                compDisplay.innerHTML = `Computer chose <strong>${compChoice.charAt(0).toUpperCase() + compChoice.slice(1)}</strong> ${emojis[compChoice]}`;
+
+                let result = '';
+                if (userChoice === compChoice) {
+                    result = 'DRAW';
+                    scores.draws++;
+                    outcomeDisplay.style.color = 'var(--accent-color)';
+                } else if (winMap[userChoice] === compChoice) {
+                    result = 'YOU WIN!';
+                    scores.wins++;
+                    outcomeDisplay.style.color = '#55efc4';
+                } else {
+                    result = 'YOU LOSE!';
+                    scores.losses++;
+                    outcomeDisplay.style.color = '#ff7675';
+                }
+
+                outcomeDisplay.textContent = result;
+                updateScoreboard();
+
+                // Trigger animations
+                userDisplay.classList.add('show');
+                setTimeout(() => compDisplay.classList.add('show'), 200);
+                setTimeout(() => outcomeDisplay.classList.add('show'), 400);
+            }, 50);
+        }
+
+        function updateScoreboard() {
+            winsEl.textContent = scores.wins;
+            lossesEl.textContent = scores.losses;
+            drawsEl.textContent = scores.draws;
+        }
+
+        function resetGame() {
+            scores = { wins: 0, losses: 0, draws: 0 };
+            updateScoreboard();
+            userDisplay.classList.remove('show');
+            compDisplay.classList.remove('show');
+            outcomeDisplay.classList.remove('show');
+            setTimeout(() => {
+                userDisplay.textContent = '';
+                compDisplay.textContent = '';
+                outcomeDisplay.textContent = '';
+            }, 500);
+        }
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => playRound(btn.dataset.choice));
+        });
+
+        resetBtn.addEventListener('click', resetGame);
+    </script>
+</body>
+
+</html>
